@@ -1,0 +1,10 @@
+{
+  "ciudad": "Burgos",
+  "latitud": 42.3439,
+  "longitud": -3.6969,
+  "zona_horaria": "Europe/Madrid",
+  "noticias_consulta": "Burgos",
+  "noticias_max": 8,
+  "calendario_ics": "",
+  "salida": "out"
+}

@@ -1,0 +1,32 @@
+name: Generar pantallas
+
+on:
+  schedule:
+    - cron: "0 */3 * * *"   # cada 3 horas (UTC)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: sudo apt-get install -y fonts-dejavu-core >/dev/null
+      - run: python generate.py
+      # Publica solo los PNG en la rama "pantallas" con un único commit,
+      # para que el repositorio no crezca con cada ejecución.
+      - name: Publicar en la rama pantallas
+        run: |
+          cd out
+          git init -q -b pantallas
+          git config user.name "pantallas-bot"
+          git config user.email "pantallas-bot@users.noreply.github.com"
+          git add .
+          git commit -q -m "Pantallas $(date -u +%F\ %H:%M)"
+          git push -q -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" pantallas
